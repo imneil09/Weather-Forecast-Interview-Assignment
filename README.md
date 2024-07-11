@@ -1,16 +1,23 @@
-# weather
+# Weather Forecast Application Interview Assesment
 
-A new Flutter project.
+A simple weather forecast application for Android and iOS devices built using Flutter. This application retrieves weather data from a public API and displays it to the user. Users can search for weather forecasts based on location (city) and view relevant weather information such as temperature, humidity, wind speed, and weather condition.
+
+## Features
+
+- Search weather forecasts by city name.
+- Display current weather information: temperature, humidity, wind speed, and condition.
+- Clean and intuitive user interface.
+- Graceful handling of errors and invalid inputs.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- [Flutter](https://flutter.dev/docs/get-started/install) installed on your system.
+- An API key from OpenWeatherMap or another supported weather API.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. **Clone the repository:**
+   ```sh
+   https://github.com/imneil09/Weather-Forecast-Interview-Assignment
