@@ -20,7 +20,7 @@ A simple weather forecast application for Android and iOS devices built using Fl
 
 1. **Clone the repository:**
    ```sh
-   https://github.com/imneil09/Weather-Forecast-Interview-Assignment
+   git clone https://github.com/imneil09/Weather-Forecast-Interview-Assignment.git
 
 2. **Navigate to the project directory:**
    ```sh
