@@ -40,7 +40,6 @@ A simple weather forecast application for Android and iOS devices built using Fl
 
 ### Project Structure
     
-    ```sh
     weather/
     ├── android
     ├── build
