@@ -21,3 +21,46 @@ A simple weather forecast application for Android and iOS devices built using Fl
 1. **Clone the repository:**
    ```sh
    https://github.com/imneil09/Weather-Forecast-Interview-Assignment
+
+2. **Navigate to the project directory:**
+   ```sh
+   cd weather
+
+3. **Install the dependencies:**
+   ```sh
+   flutter pub get
+
+4. **Install the dependencies:**
+   ```sh
+   flutter pub get
+
+5. **Running the application:**
+   ```sh
+   flutter run
+
+### Project Structure
+    
+    ```sh
+    weather/
+    ├── android
+    ├── build
+    ├── ios
+    ├── lib
+    │   ├── controllers
+    │   │   └── weather_controller.dart
+    │   ├── models
+    │   │   └── weather_model.dart
+    │   ├── services
+    │   │   └── weather_service.dart
+    │   ├── views
+    │   │   └── home_view.dart
+    │   └── main.dart
+    ├── test
+    ├── .gitignore
+    ├── pubspec.lock
+    └── pubspec.yaml
+
+
+
+
+
