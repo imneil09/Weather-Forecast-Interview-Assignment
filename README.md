@@ -30,16 +30,13 @@ A simple weather forecast application for Android and iOS devices built using Fl
    ```sh
    flutter pub get
 
-4. **Install the dependencies:**
-   ```sh
-   flutter pub get
-
-5. **Running the application:**
+4. **Running the application:**
    ```sh
    flutter run
 
 ### Project Structure
     
+    ```sh
     weather/
     ├── android
     ├── build
