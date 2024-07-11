@@ -54,8 +54,3 @@ A simple weather forecast application for Android and iOS devices built using Fl
     ├── .gitignore
     ├── pubspec.lock
     └── pubspec.yaml
-
-
-
-
-

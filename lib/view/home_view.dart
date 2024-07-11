@@ -79,85 +79,22 @@ class HomeView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // Card for Humidity
-                  Card(
-                    color: Colors.lightBlueAccent.withOpacity(0.5),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Humidity',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            '${weatherController.weather.value.humidity}%',
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      ),
-                    ),
+                  _weatherInfoCard(
+                    title: 'Humidity',
+                    value: '${weatherController.weather.value.humidity}%',
                   ),
                   // Card for Wind Speed
-                  Card(
-                    color: Colors.lightBlueAccent.withOpacity(0.5),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Wind Speed',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            '${weatherController.weather.value.windSpeed} m/s',
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      ),
-                    ),
+                  _weatherInfoCard(
+                    title: 'Wind Speed',
+                    value: '${weatherController.weather.value.windSpeed} m/s',
                   ),
                 ],
               ),
               const SizedBox(height: 20),
               // Card for Condition
-              Card(
-                color: Colors.lightBlueAccent.withOpacity(0.5),
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Condition',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        weatherController.weather.value.condition,
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                    ],
-                  ),
-                ),
+              _weatherInfoCard(
+                title: 'Condition',
+                value: weatherController.weather.value.condition,
               ),
             ],
           );
@@ -166,6 +103,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
+  // Function to show search dialog and return city name
   Future<String?> _showSearchDialog() async {
     String city = '';
     return await Get.dialog<String>(
@@ -192,6 +130,34 @@ class HomeView extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  // Widget for displaying weather information cards
+  Widget _weatherInfoCard({required String title, required String value}) {
+    return Card(
+      color: Colors.lightBlueAccent.withOpacity(0.5),
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              value,
+              style: const TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
       ),
     );
   }
