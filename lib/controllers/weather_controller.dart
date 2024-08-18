@@ -10,8 +10,13 @@ class WeatherController extends GetxController {
     windSpeed: 0,
     condition: '',
   ).obs;
-  var isLoading = false.obs;
-  var errorMessage = ''.obs;
+
+  var forecast = Forecast(dateTime: [], condition: ['', '']).obs;
+
+  var isWeatherLoading = false.obs;
+  var isForecastLoading = false.obs;
+  var errorMessage1 = ''.obs;
+  var errorMessage2 = ''.obs;
   final String lastCityKey = 'Delhi';
   final WeatherService weatherService;
 
@@ -23,17 +28,31 @@ class WeatherController extends GetxController {
     _loadLastCity();
   }
 
-  Future<void> fetchWeather(String city) async {
+  Future<void> fetchCurrentWeather(String city) async {
     try {
-      isLoading(true);
-      errorMessage('');
-      final weatherJson = await weatherService.fetchWeather(city);
+      isWeatherLoading(true);
+      errorMessage1('');
+      final weatherJson = await weatherService.fetchCurrentWeather(city);
       weather(Weather.fromJson(weatherJson));
       _saveLastCity(city);
     } catch (e) {
-      errorMessage('Failed to load weather data');
+      errorMessage1('Failed to load weather data');
     } finally {
-      isLoading(false);
+      isWeatherLoading(false);
+    }
+  }
+
+  Future<void> fetchHourlyForecast(String city) async {
+    try {
+      isForecastLoading(true);
+      errorMessage2('');
+      final forecastJson = await weatherService.fetchHourlyForecast(city);
+      forecast(Forecast.fromJson(forecastJson));
+      _saveLastCity(city);
+    } catch (e) {
+      errorMessage2('Failed to load forecast data');
+    } finally {
+      isForecastLoading(false);
     }
   }
 
@@ -46,11 +65,7 @@ class WeatherController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     final lastCity = prefs.getString(lastCityKey);
     if (lastCity != null && lastCity.isNotEmpty) {
-      fetchWeather(lastCity);
+      fetchCurrentWeather(lastCity);
     }
   }
-
-
-
-
 }

@@ -22,7 +22,8 @@ class HomeView extends StatelessWidget {
             onPressed: () async {
               final city = await _showSearchDialog();
               if (city != null) {
-                weatherController.fetchWeather(city);
+                weatherController.fetchCurrentWeather(city);
+                weatherController.fetchHourlyForecast(city);
               }
             },
           ),
@@ -31,12 +32,12 @@ class HomeView extends StatelessWidget {
         backgroundColor: Colors.blueAccent.withOpacity(0.5),
       ),
       body: Obx(() {
-        if (weatherController.isLoading.value) {
+        if (weatherController.isWeatherLoading.value) {
           return const Center(child: CircularProgressIndicator());
-        } else if (weatherController.errorMessage.value.isNotEmpty) {
+        } else if (weatherController.errorMessage1.value.isNotEmpty) {
           return Center(
             child: Text(
-              weatherController.errorMessage.value,
+              weatherController.errorMessage1.value,
               style: const TextStyle(color: Colors.red, fontSize: 18),
             ),
           );
@@ -95,6 +96,44 @@ class HomeView extends StatelessWidget {
               _weatherInfoCard(
                 title: 'Condition',
                 value: weatherController.weather.value.condition,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              // Row for Forecast
+              Container(
+                margin: const EdgeInsets.all(10.0),
+                height: 200.0, // Height of the cards
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 2,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation: 5,
+                      margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Container(
+                        width: 150.0, // Width of the cards
+                        padding: const EdgeInsets.all(10.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                '${weatherController.forecast.value.dateTime[0]}',
+                                style: const TextStyle(fontSize: 20.0),
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                weatherController.forecast.value.condition[0],
+                                style: const TextStyle(fontSize: 20.0),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           );

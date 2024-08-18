@@ -20,3 +20,20 @@ class Weather {
     );
   }
 }
+
+class Forecast {
+  final List<DateTime> dateTime;
+  final List<String> condition;
+
+  Forecast({
+  required this.dateTime,
+  required this.condition
+  });
+
+  factory Forecast.fromJson(Map<String, dynamic> json) {
+    return Forecast(
+     dateTime: json['list'][0]['dt_txt'],
+     condition: json['list'][0]['weather'][0]['description']
+    );
+  }
+}
