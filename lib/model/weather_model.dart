@@ -13,27 +13,55 @@ class Weather {
 
   factory Weather.fromJson(Map<String, dynamic> json) {
     return Weather(
-      temperature: json['main']['temp'],
+      temperature: json['main']['temp'].toDouble(),
       humidity: json['main']['humidity'],
-      windSpeed: json['wind']['speed'],
+      windSpeed: json['wind']['speed'].toDouble(),
       condition: json['weather'][0]['description'],
     );
   }
 }
 
 class Forecast {
-  final List<DateTime> dateTime;
-  final List<String> condition;
+  final DateTime dateTime;
+  final String condition;
 
   Forecast({
-  required this.dateTime,
-  required this.condition
+    required this.dateTime,
+    required this.condition,
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json) {
     return Forecast(
-     dateTime: json['list'][0]['dt_txt'],
-     condition: json['list'][0]['weather'][0]['description']
+      dateTime: DateTime.parse(json['dt_txt']),
+      condition: json['weather'][0]['description'],
+    );
+  }
+
+  static List<Forecast> fromJsonList(List<dynamic> jsonList) {
+    return jsonList.map((json) => Forecast.fromJson(json)).toList();
+  }
+}
+
+
+class Air {
+  final double co;
+  final double no2;
+  final double o3;
+  final double so2;
+
+  Air({
+    required this.co,
+    required this.no2,
+    required this.o3,
+    required this.so2,
+  });
+
+  factory Air.fromJson(Map<String, dynamic> json) {
+    return Air(
+      co: json['list'][0]['components']['co'].toDouble(),
+      no2: json['list'][0]['components']['no2'].toDouble(),
+      o3: json['list'][0]['components']['o3'].toDouble(),
+      so2: json['list'][0]['components']['so2'].toDouble(),
     );
   }
 }

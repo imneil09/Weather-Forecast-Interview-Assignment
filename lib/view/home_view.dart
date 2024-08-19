@@ -3,7 +3,6 @@ import 'package:weather/controllers/weather_controller.dart';
 import 'package:weather/services/weather_service.dart';
 import 'package:get/get.dart';
 
-// ignore: use_key_in_widget_constructors
 class HomeView extends StatelessWidget {
   final WeatherController weatherController =
       Get.put(WeatherController(WeatherService()));
@@ -21,9 +20,10 @@ class HomeView extends StatelessWidget {
             icon: const Icon(Icons.search, color: Colors.white),
             onPressed: () async {
               final city = await _showSearchDialog();
-              if (city != null) {
+              if (city != null && city.isNotEmpty) {
                 weatherController.fetchCurrentWeather(city);
                 weatherController.fetchHourlyForecast(city);
+                weatherController.fetchAirQuality(city);
               }
             },
           ),
@@ -97,43 +97,79 @@ class HomeView extends StatelessWidget {
                 title: 'Condition',
                 value: weatherController.weather.value.condition,
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               // Row for Forecast
               Container(
                 margin: const EdgeInsets.all(10.0),
                 height: 200.0, // Height of the cards
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 2,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 5,
-                      margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Container(
-                        width: 150.0, // Width of the cards
-                        padding: const EdgeInsets.all(10.0),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Text(
-                                '${weatherController.forecast.value.dateTime[0]}',
-                                style: const TextStyle(fontSize: 20.0),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                weatherController.forecast.value.condition[0],
-                                style: const TextStyle(fontSize: 20.0),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
+                child: Obx(() {
+                  if (weatherController.isForecastLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (weatherController.errorMessage2.value.isNotEmpty) {
+                    return Center(
+                      child: Text(
+                        weatherController.errorMessage2.value,
+                        style: const TextStyle(color: Colors.red, fontSize: 18),
                       ),
                     );
-                  },
-                ),
+                  } else {
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: weatherController.forecast.length,
+                      itemBuilder: (context, index) {
+                        final forecast =
+                            weatherController.forecast[index];
+                        return Card(
+                          elevation: 5,
+                          margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Container(
+                            width: 150.0, // Width of the cards
+                            padding: const EdgeInsets.all(10.0),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    _formatDate(forecast.dateTime),
+                                    style: const TextStyle(fontSize: 16.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    forecast.condition,
+                                    style: const TextStyle(fontSize: 16.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                }),
+              ),
+              const SizedBox(height: 20),
+              // Card for Air Quality
+              _weatherInfoCard(
+                title: 'Air Quality (CO)',
+                value: '${weatherController.airQuality.value.co} µg/m³',
+              ),
+              const SizedBox(height: 20),
+              _weatherInfoCard(
+                title: 'Air Quality (NO2)',
+                value: '${weatherController.airQuality.value.no2} µg/m³',
+              ),
+              const SizedBox(height: 20),
+              _weatherInfoCard(
+                title: 'Air Quality (O3)',
+                value: '${weatherController.airQuality.value.o3} µg/m³',
+              ),
+              const SizedBox(height: 20),
+              _weatherInfoCard(
+                title: 'Air Quality (SO2)',
+                value: '${weatherController.airQuality.value.so2} µg/m³',
               ),
             ],
           );
@@ -199,5 +235,10 @@ class HomeView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Function to format DateTime to a more readable format
+  String _formatDate(DateTime dateTime) {
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
 }
