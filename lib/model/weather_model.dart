@@ -21,27 +21,27 @@ class Weather {
   }
 }
 
-class Forecast {
+class HourlyWeather {
   final DateTime dateTime;
-  final String condition;
+  final double temperature;
+  final String weatherDescription;
 
-  Forecast({
+  HourlyWeather({
     required this.dateTime,
-    required this.condition,
+    required this.temperature,
+    required this.weatherDescription,
   });
 
-  factory Forecast.fromJson(Map<String, dynamic> json) {
-    return Forecast(
-      dateTime: DateTime.parse(json['dt_txt']),
-      condition: json['weather'][0]['description'],
+  factory HourlyWeather.fromJson(Map<String, dynamic> json) {
+    return HourlyWeather(
+      dateTime: DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000),
+      temperature: json['temp'].toDouble(),
+      weatherDescription: json['weather'] != null && json['weather'].isNotEmpty
+          ? json['weather'][0]['description']
+          : 'No description',
     );
   }
-
-  static List<Forecast> fromJsonList(List<dynamic> jsonList) {
-    return jsonList.map((json) => Forecast.fromJson(json)).toList();
-  }
 }
-
 
 class Air {
   final double co;
@@ -58,10 +58,18 @@ class Air {
 
   factory Air.fromJson(Map<String, dynamic> json) {
     return Air(
-      co: json['list'][0]['components']['co'].toDouble(),
-      no2: json['list'][0]['components']['no2'].toDouble(),
-      o3: json['list'][0]['components']['o3'].toDouble(),
-      so2: json['list'][0]['components']['so2'].toDouble(),
+      co: json['list'] != null && json['list'].isNotEmpty
+          ? json['list'][0]['components']['co'].toDouble()
+          : 0.0,
+      no2: json['list'] != null && json['list'].isNotEmpty
+          ? json['list'][0]['components']['no2'].toDouble()
+          : 0.0,
+      o3: json['list'] != null && json['list'].isNotEmpty
+          ? json['list'][0]['components']['o3'].toDouble()
+          : 0.0,
+      so2: json['list'] != null && json['list'].isNotEmpty
+          ? json['list'][0]['components']['so2'].toDouble()
+          : 0.0,
     );
   }
 }

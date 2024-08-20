@@ -12,17 +12,13 @@ class WeatherController extends GetxController {
     condition: '',
   ).obs;
 
-  var forecast = <Forecast>[].obs; // Change to a list of Forecast objects
-
-var airQuality = Air(co: 0.0, no2: 0.0, o3: 0.0, so2: 0.0).obs;
+  var airQuality = Air(co: 0.0, no2: 0.0, o3: 0.0, so2: 0.0).obs;
 
   var isWeatherLoading = false.obs;
-  var isForecastLoading = false.obs;
   var isAirQualityLoading = false.obs;
   var errorMessage1 = ''.obs;
-  var errorMessage2 = ''.obs;
   var errorMessage3 = ''.obs;
-  final String lastCityKey = 'Delhi';
+  final String lastCityKey = 'lastCity'; // Use a more descriptive key name
   final WeatherService weatherService;
 
   WeatherController(this.weatherService);
@@ -41,23 +37,9 @@ var airQuality = Air(co: 0.0, no2: 0.0, o3: 0.0, so2: 0.0).obs;
       weather(Weather.fromJson(weatherJson));
       _saveLastCity(city);
     } catch (e) {
-      errorMessage1('Failed to load weather data');
+      errorMessage1('Failed to load weather data: $e');
     } finally {
       isWeatherLoading(false);
-    }
-  }
-
-  Future<void> fetchHourlyForecast(String city) async {
-    try {
-      isForecastLoading(true);
-      errorMessage2('');
-      final forecastJson = await weatherService.fetchHourlyForecast(city);
-      // Update the forecast list
-      forecast(Forecast.fromJsonList(forecastJson['list']));
-    } catch (e) {
-      errorMessage2('Failed to load forecast data');
-    } finally {
-      isForecastLoading(false);
     }
   }
 
@@ -68,7 +50,7 @@ var airQuality = Air(co: 0.0, no2: 0.0, o3: 0.0, so2: 0.0).obs;
       final airJson = await weatherService.fetchAirQuality(city);
       airQuality(Air.fromJson(airJson));
     } catch (e) {
-      errorMessage3('Failed to load air data');
+      errorMessage3('Failed to load air data: $e');
     } finally {
       isAirQualityLoading(false);
     }
@@ -84,7 +66,6 @@ var airQuality = Air(co: 0.0, no2: 0.0, o3: 0.0, so2: 0.0).obs;
     final lastCity = prefs.getString(lastCityKey);
     if (lastCity != null && lastCity.isNotEmpty) {
       fetchCurrentWeather(lastCity);
-      fetchHourlyForecast(lastCity);
       fetchAirQuality(lastCity);
     }
   }

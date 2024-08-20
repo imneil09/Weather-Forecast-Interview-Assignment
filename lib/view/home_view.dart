@@ -22,7 +22,6 @@ class HomeView extends StatelessWidget {
               final city = await _showSearchDialog();
               if (city != null && city.isNotEmpty) {
                 weatherController.fetchCurrentWeather(city);
-                weatherController.fetchHourlyForecast(city);
                 weatherController.fetchAirQuality(city);
               }
             },
@@ -46,45 +45,20 @@ class HomeView extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             children: [
               // Upper section for temperature
-              Container(
-                padding: const EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: const LinearGradient(
-                    colors: [Colors.indigo, Colors.blueAccent],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Temperature',
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      '${weatherController.weather.value.temperature}°C',
-                      style: const TextStyle(fontSize: 40, color: Colors.white),
-                    ),
-                  ],
-                ),
+              _weatherInfoSection(
+                title: 'Temperature',
+                value: '${weatherController.weather.value.temperature}°C',
+                gradientColors: [Colors.indigo, Colors.blueAccent],
               ),
               const SizedBox(height: 20),
               // Row for additional weather info cards
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Card for Humidity
                   _weatherInfoCard(
                     title: 'Humidity',
                     value: '${weatherController.weather.value.humidity}%',
                   ),
-                  // Card for Wind Speed
                   _weatherInfoCard(
                     title: 'Wind Speed',
                     value: '${weatherController.weather.value.windSpeed} m/s',
@@ -96,59 +70,6 @@ class HomeView extends StatelessWidget {
               _weatherInfoCard(
                 title: 'Condition',
                 value: weatherController.weather.value.condition,
-              ),
-              const SizedBox(height: 20),
-              // Row for Forecast
-              Container(
-                margin: const EdgeInsets.all(10.0),
-                height: 200.0, // Height of the cards
-                child: Obx(() {
-                  if (weatherController.isForecastLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (weatherController.errorMessage2.value.isNotEmpty) {
-                    return Center(
-                      child: Text(
-                        weatherController.errorMessage2.value,
-                        style: const TextStyle(color: Colors.red, fontSize: 18),
-                      ),
-                    );
-                  } else {
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: weatherController.forecast.length,
-                      itemBuilder: (context, index) {
-                        final forecast =
-                            weatherController.forecast[index];
-                        return Card(
-                          elevation: 5,
-                          margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Container(
-                            width: 150.0, // Width of the cards
-                            padding: const EdgeInsets.all(10.0),
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    _formatDate(forecast.dateTime),
-                                    style: const TextStyle(fontSize: 16.0),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    forecast.condition,
-                                    style: const TextStyle(fontSize: 16.0),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                }),
               ),
               const SizedBox(height: 20),
               // Card for Air Quality
@@ -178,7 +99,6 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  // Function to show search dialog and return city name
   Future<String?> _showSearchDialog() async {
     String city = '';
     return await Get.dialog<String>(
@@ -201,7 +121,13 @@ class HomeView extends StatelessWidget {
           TextButton(
             child: const Text('Search', style: TextStyle(color: Colors.blue)),
             onPressed: () {
-              Get.back(result: city);
+              if (city.isNotEmpty) {
+                Get.back(result: city);
+              } else {
+                Get.snackbar('Error', 'City name cannot be empty',
+                    backgroundColor: Colors.red.withOpacity(0.5),
+                    colorText: Colors.white);
+              }
             },
           ),
         ],
@@ -209,7 +135,39 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  // Widget for displaying weather information cards
+  Widget _weatherInfoSection({
+    required String title,
+    required String value,
+    required List<Color> gradientColors,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        gradient: LinearGradient(
+          colors: gradientColors,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 40, color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _weatherInfoCard({required String title, required String value}) {
     return Card(
       color: Colors.lightBlueAccent.withOpacity(0.5),
@@ -235,10 +193,5 @@ class HomeView extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  // Function to format DateTime to a more readable format
-  String _formatDate(DateTime dateTime) {
-    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
 }
