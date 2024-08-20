@@ -18,9 +18,8 @@ class WeatherController extends GetxController {
   var isAirQualityLoading = false.obs;
   var errorMessage1 = ''.obs;
   var errorMessage3 = ''.obs;
-  final String lastCityKey = 'lastCity'; // Use a more descriptive key name
+  final String lastCityKey = 'Delhi';
   final WeatherService weatherService;
-
   WeatherController(this.weatherService);
 
   @override
